@@ -157,7 +157,7 @@ class OuterKernelBase:
                 """
                 self._kernel.set_params(**params)
 
-        return SklearnOuterKernel(kernel, **kwarg)
+        return SklearnOuterKernel(kernel=kernel, **kwarg)
 
 
 class ProjectedQuantumKernel(KernelMatrixBase):
