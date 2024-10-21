@@ -104,7 +104,9 @@ class OuterKernelBase:
             """
 
             def __init__(self, _kernel: SklearnKernel, **kwarg):
+                print("Before init: ", _kernel)
                 super().__init__()
+                print("After init: ", _kernel)
                 self._kernel = _kernel(**kwarg)
                 self._name_hyper_parameters = [p.name for p in self._kernel.hyperparameters]
                 self._num_hyper_parameters = len(self._name_hyper_parameters)
@@ -157,6 +159,7 @@ class OuterKernelBase:
                 """
                 self._kernel.set_params(**params)
 
+        print("Before call: ", kernel)
         return SklearnOuterKernel(_kernel=kernel, **kwarg)
 
 
@@ -645,8 +648,11 @@ class ProjectedQuantumKernel(KernelMatrixBase):
                                                         expectation values
             **kwargs: Keyword arguments for the outer kernel
         """
+        print("outer_kernel: ", outer_kernel)
+        print("outer_kernel?: ", isinstance(outer_kernel, OuterKernelBase))
         if isinstance(outer_kernel, str):
             kwargs.pop("num_qubits", None)
+            print("outer_kernel: ", outer_kernel.lower())
             if outer_kernel.lower() == "gaussian":
                 self._outer_kernel = GaussianOuterKernel(**kwargs)
             elif outer_kernel.lower() == "matern":
