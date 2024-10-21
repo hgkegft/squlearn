@@ -103,9 +103,9 @@ class OuterKernelBase:
                 **kwarg: Arguments for the scikit-learn kernel parameters
             """
 
-            def __init__(self, kernel: SklearnKernel, **kwarg):
+            def __init__(self, _kernel: SklearnKernel, **kwarg):
                 super().__init__()
-                self._kernel = kernel(**kwarg)
+                self._kernel = _kernel(**kwarg)
                 self._name_hyper_parameters = [p.name for p in self._kernel.hyperparameters]
                 self._num_hyper_parameters = len(self._name_hyper_parameters)
 
