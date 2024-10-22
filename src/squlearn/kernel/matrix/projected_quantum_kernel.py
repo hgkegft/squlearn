@@ -37,7 +37,7 @@ class OuterKernelBase:
 
     @abstractmethod
     def __call__(
-        self, qnn: LowLevelQNNBase, parameters: np.ndarray, x: np.ndarray, y: np.ndarray = None
+            self, qnn: LowLevelQNNBase, parameters: np.ndarray, x: np.ndarray, y: np.ndarray = None
     ) -> np.ndarray:
         """
         Args:
@@ -112,11 +112,11 @@ class OuterKernelBase:
                 self._num_hyper_parameters = len(self._name_hyper_parameters)
 
             def __call__(
-                self,
-                qnn: LowLevelQNNBase,
-                parameters: np.ndarray,
-                x: np.ndarray,
-                y: np.ndarray = None,
+                    self,
+                    qnn: LowLevelQNNBase,
+                    parameters: np.ndarray,
+                    x: np.ndarray,
+                    y: np.ndarray = None,
             ) -> np.ndarray:
                 """Evaluates the outer kernel
 
@@ -128,7 +128,7 @@ class OuterKernelBase:
                 """
                 # Evaluate QNN
                 param = parameters[: qnn.num_parameters]
-                param_op = parameters[qnn.num_parameters :]
+                param_op = parameters[qnn.num_parameters:]
                 x_result = qnn.evaluate(x, param, param_op, "f")["f"]
                 if y is not None:
                     y_result = qnn.evaluate(y, param, param_op, "f")["f"]
@@ -158,6 +158,9 @@ class OuterKernelBase:
                     params: Hyper-parameters and their values
                 """
                 self._kernel.set_params(**params)
+
+            def __reduce__(self):
+                return self.__class__, (self._kernel.__class__,), self._kernel.get_params()
 
         print("Before call: ", kernel)
         return SklearnOuterKernel(_kernel=kernel, **kwarg)
@@ -348,16 +351,16 @@ class ProjectedQuantumKernel(KernelMatrixBase):
     """
 
     def __init__(
-        self,
-        encoding_circuit: EncodingCircuitBase,
-        executor: Executor,
-        measurement: Union[str, ObservableBase, list] = "XYZ",
-        outer_kernel: Union[str, OuterKernelBase] = "gaussian",
-        initial_parameters: Union[np.ndarray, None] = None,
-        parameter_seed: Union[int, None] = 0,
-        regularization: Union[str, None] = None,
-        caching: bool = True,
-        **kwargs,
+            self,
+            encoding_circuit: EncodingCircuitBase,
+            executor: Executor,
+            measurement: Union[str, ObservableBase, list] = "XYZ",
+            outer_kernel: Union[str, OuterKernelBase] = "gaussian",
+            initial_parameters: Union[np.ndarray, None] = None,
+            parameter_seed: Union[int, None] = 0,
+            regularization: Union[str, None] = None,
+            caching: bool = True,
+            **kwargs,
     ) -> None:
         super().__init__(
             encoding_circuit, executor, initial_parameters, parameter_seed, regularization
@@ -454,7 +457,7 @@ class ProjectedQuantumKernel(KernelMatrixBase):
         if self._parameters is None:
             raise ValueError("Parameters have not been set yet!")
         param = self._parameters[: self._qnn.num_parameters]
-        param_op = self._parameters[self._qnn.num_parameters :]
+        param_op = self._parameters[self._qnn.num_parameters:]
         # Evaluate and return
         return self._qnn.evaluate(x, param, param_op, "f")["f"]
 
@@ -475,7 +478,7 @@ class ProjectedQuantumKernel(KernelMatrixBase):
 
         kernel_matrix = self._outer_kernel(self._qnn, self._parameters, x, y)
         if (self._regularization is not None) and (
-            kernel_matrix.shape[0] == kernel_matrix.shape[1]
+                kernel_matrix.shape[0] == kernel_matrix.shape[1]
         ):
             kernel_matrix = self._regularize_matrix(kernel_matrix)
         return kernel_matrix
@@ -693,7 +696,7 @@ class GaussianOuterKernel(OuterKernelBase):
         self._name_hyper_parameters = ["gamma"]
 
     def __call__(
-        self, qnn: LowLevelQNNBase, parameters: np.ndarray, x: np.ndarray, y: np.ndarray = None
+            self, qnn: LowLevelQNNBase, parameters: np.ndarray, x: np.ndarray, y: np.ndarray = None
     ) -> np.ndarray:
         """Evaluates the QNN and returns the Gaussian projected kernel
 
@@ -709,7 +712,7 @@ class GaussianOuterKernel(OuterKernelBase):
 
         # Evaluate QNN
         param = parameters[: qnn.num_parameters]
-        param_op = parameters[qnn.num_parameters :]
+        param_op = parameters[qnn.num_parameters:]
 
         if len(param.shape) == 1 and len(param) == 1:
             param = float(param)
