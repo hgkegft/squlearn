@@ -86,11 +86,11 @@ class OuterKernelBase:
         return self._name_hyper_parameters
 
     @classmethod
-    def from_sklearn_kernel(cls, kernel: SklearnKernel, **kwarg):
+    def from_sklearn_kernel(cls, outer_kernel: SklearnKernel, **kwarg):
         """Converts a scikit-learn kernel into a squlearn kernel
 
         Args:
-            kernel: scikit-learn kernel
+            outer_kernel: scikit-learn kernel
             kwarg: arguments for the scikit-learn kernel parameters
         """
 
@@ -103,11 +103,11 @@ class OuterKernelBase:
                 **kwarg: Arguments for the scikit-learn kernel parameters
             """
 
-            def __init__(self, _kernel: SklearnKernel, **kwarg):
-                print("Before init: ", _kernel)
+            def __init__(self, inner_kernel: SklearnKernel, **kwarg):
+                print("Before init: ", inner_kernel)
                 super().__init__()
-                print("After init: ", _kernel)
-                self._kernel = _kernel(**kwarg)
+                print("After init: ", inner_kernel)
+                self._kernel = inner_kernel(**kwarg)
                 self._name_hyper_parameters = [p.name for p in self._kernel.hyperparameters]
                 self._num_hyper_parameters = len(self._name_hyper_parameters)
 
@@ -162,8 +162,8 @@ class OuterKernelBase:
             def __reduce__(self):
                 return self.__class__, (self._kernel.__class__,), self._kernel.get_params()
 
-        print("Before call: ", kernel)
-        return SklearnOuterKernel(_kernel=kernel, **kwarg)
+        print("Before call: ", outer_kernel)
+        return SklearnOuterKernel(inner_kernel=outer_kernel, **kwarg)
 
 
 class ProjectedQuantumKernel(KernelMatrixBase):
